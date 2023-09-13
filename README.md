@@ -58,282 +58,148 @@ How are we iterating? We, don't need to worry about that.
 | [every(cb)](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/every) | Check if every element matches a condition | `true` or `false` | Return truthy if `elem` is what you're checking for | `(elem, idx)` |
 | [reduce(cb, initAcc)](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce) | Reduce the array to a single value/object | Final value of `acc` (accumulator) | Return the new value of `acc` for the next iteration | `(acc, elem, idx)` | 
 
-## Observations
+## Lesson Instructions
+In JavaScript, functions are first-class citizens, which means, we can pass functions around like values. **Higher Order Functions** are functions that pass a function as an argument or return a function as a value, adding another layer of complexity.
 
-The following observations will make it easier to remember the syntax of these important methods...
+### Higher Order Functions w/ Food!
 
-- Each of the methods invoke a callback function for each iteration.
+![map, filter, reduce with emoji](https://i.redd.it/yf7rw3pjiapx.jpg)
 
-- Most methods have to iterate over the entire array in order to fulfil their purpose, however, the following methods will "short circuit" and stop iterating once their return value has been determined:
+Take a look at the graphic above and see if you can guess what each of these methods does to the original values... We'll reference back to this throughout the lesson and it will make more sense!
 
-  - `find`: Stops iterating when the callback returns a truthy value
-  - `findIndex`: Stops iterating when the callback returns a truthy value
-  - `some`: Stops iterating when the callback returns a truthy value
-  - `every`: Stops iterating when the callback returns a falsy value
-
-  > **VOCAB:** Note that the `filter`, `find`, `findIndex`, `some` and `every` iterator methods rely on the truthy-ness or falsy-ness returned by the callback function. In programming, a function designed to return `true` or `false` is called a **predicate function**. 
-
-- All of the iterator methods, except `reduce`, have identical signatures, that is, they all accept a single argument - a callback function.
-
-  Additionally, the signature of that callback functions are all the same as well!
-
-## Code Examples
-
-### `forEach`
-
-**PURPOSE:** General purpose iterator method.
+### Review: [for loops](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for)!
 
 ```js
-const friends = ["Melissa", "Marc", "Andrew", "Nick"];
+const numbers = [1, 2, 3, 4, 5]
 
-friends.forEach(function(friend) {
-  console.log(`I have a friend named ${friend}`);
-});
+for (let i = 0; i < numbers.length; i++) {
+  console.log(numbers[i])
+}
 
-// logs out "I have a friend named <friend's name>" for each friend
+// Will console.log 1 2 3 4 5
 ```
 
-##### YOU DO
+### [forEach](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach)
 
-Using `forEach` log out each of my `friends` but with the first letter of their name lower-cased. Use the `<str>.toLowerCase()` method. 
-
-```js
-"Cats".toLowerCase(); //=> cats
-``` 
-
----
-
-### `map`
-
-<img src="https://i.imgur.com/Ey05BEt.png">
-
-**PURPOSE:** Create a new array from a source array by replacing or transforming its elements.
-
-The returned array is always the same length as the source array.
-
-##### Transform an array
+- You can call the `.forEach()` method on any array and pass it a function to execute on each item in the array.
 
 ```js
-const nums = [1, 2, 3];
-const squared = nums.map(function(num) {
-  return num * num;
-});
+const numbers = [1, 2, 3, 4, 5]
 
-// squared -> [1, 4, 9]
+numbers.forEach((element) => {
+    console.log(element);
+  })
 
-/*--- using an arrow function for the callback ---*/
-const squared = nums.map((num) => num * num);
+// Will console.log 1 2 3 4 5
 ```
 
-##### The new elements can be anything!
+### [map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map)
 
-Here we want to map an object of "people" objects into an array of DOM elements:
+- `.map()` will loop over a given array and produce a new array with new values based on logic you define in the function passed into `.map()`.
 
-```js
-const people = [
-  {name: 'Fred', town: 'Bedrock'},
-  {name: 'Susan', town: 'Miami'},
-  {name: 'John', town: 'Arcadia'}
-];
-
-const els = people.map((person, idx) => {
-  const el = document.createElement('div');
-  el.innerHTML = `${person.name} <span>(${person.town})</span>`;
-  // The new array will contain whatever
-  // is returned from the callback 
-  return el;
-});
-
-// Append the <div>s to the end of the <body>
-els.forEach(el => document.body.append(el));
-```
-
-##### YOU DO
-
-Given an array of instructors,
+- In the cases below, we are storing the results from the methods in a variable so that we can console.log it and see the results.
 
 ```js
-const instructors = ["Alex", "Stephanie", "Daniel"];
-```
+const words = ['the', 'world', 'is', 'round', 'like', 'an', 'orange']
 
-Use `map` to create a new array that adds the string " is awesome" to each element in the array.
+const wordLengths = words.map((word) => {
+    return word.length
+  })
+
+// console.log(wordLengths) will return [ 3, 5, 2, 5, 4, 2, 6 ]
+```
 
 ```js
-["Alex is awesome", "Stephanie is awesome", "Daniel is awesome"]
+const words = ['the', 'world', 'is', 'round', 'like', 'an', 'orange']
+
+const wordsWrappedInX = words.map((word) => { 
+    const newWord = 'x' + word + 'x'
+    return newWord
+  })
+
+// console.log(wordsWrappedInX) will return [ 'xthex', 'xworldx', 'xisx', 'xroundx', 'xlikex', 'xanx', 'xorangex' ]
 ```
 
----
+### [filter](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter)
 
-### `filter`
-
-<img src="https://i.imgur.com/JRSWt5X.png">
-
-**PURPOSE:** Select certain elements from a source array.
-
-##### Obtain just the odd numbers
+- `.filter()` will loop through a provided array and produce a new array that only contains some of the items. Each item in the array runs through a function. If the function returns true, the item is included in the new array.
 
 ```js
-const nums = [100, 2, 5, 42, 99];
-const odds = nums.filter((num) => num % 2);
+const words = ['the', 'world', 'is', 'round', 'like', 'an', 'orange']
 
-// odds -> [5, 99]
+const shortWords = words.filter((word) => { 
+    return word.length <= 3 
+  })
+
+// console.log(shortWords) will return [ 'the', 'is', 'an' ]
 ```
-
-##### YOU DO
-
-Filter out all "jerks"!
 
 ```js
-const people = ["jerks", "nice people", "jerks", "nice people", "nice people"];
+const words = ['the', 'world', 'is', 'round', 'like', 'an', 'orange']
+
+const wordsThatStartWithR = words.filter((word) => {
+    return word[0] === 'r'
+  })
+
+// console.log(wordsThatStartWithR) will return ['round']
 ```
 
----
+### [reduce](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce)
 
-### `find`
-
-<img src="https://i.imgur.com/q2BnDth.png">
-
-**PURPOSE:** Find an element within an array.
-
-##### Find a certain car object
+- The `.reduce()` method applies a function against an accumulator and each element in the array (from left to right) to reduce it to a single value that is returned.
+- It can help to think of the accumulator as *"the running total so far"* as it keeps track of that value until the `.reduce()` is complete.
+- Notice that the second argument that `.reduce()` takes is the *starting value* of the accumulator. This may not always be 0!
 
 ```js
-const cars = [
-  {color: 'red', make: 'BMW', year: 2001},
-  {color: 'white', make: 'Toyota', year: 2013},
-  {color: 'black', make: 'Ford', year: 2014},
-  {color: 'white', make: 'Tesla', year: 2016}
-];
+const numbers = [1, 2, 3, 4, 5]
 
-const firstWhiteCar = cars.find((car) => car.color === 'white');
-// firstWhiteCar -> {color: 'white', make: 'Toyota', year: 2013}
+const sum = numbers.reduce((accumulator, value) => {
+    return accumulator + value
+  }, 0)
 
-const missingCar = cars.find((car) => car.color === 'blue');
-// missingCar -> undefined
+// console.log(sum) will return 15
 ```
 
-##### YOU DO
+__NOTE__ The single value returned can be an object or array. Often in examples it is a number or string but you can return anything. Reduce is extremely powerful and all other iterators can be written using it.
 
-Find the first car whose year is older than 2014 and assign it to a variable named `notTooOldCar`;
+### [some](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some)
 
----
-
-### `findIndex`
-
-<img src="https://i.imgur.com/lmxp4lp.png">
-
-**PURPOSE:** Like `find` above, but returns the found element's index instead of the element. Note that this is usually used to find the index of an object, or one of its built-in variations (Array, Date, Regular Expression, Error) within the array. If trying to find the index of a primitive type, use [indexOf](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/indexOf) instead.
-
-
-##### Find the index of the first match
+- The `.some()` method tests whether *at least one* element in the provided array satisfies the conditions of the provided function. If *at least one* element in the array satisfies the conditions of the provided function, `true` is returned.  If *none* of the elements pass the test, `false` is returned.
 
 ```js
-const cars = [
-  {color: 'red', make: 'BMW', year: 2001},
-  {color: 'white', make: 'Toyota', year: 2013},
-  {color: 'black', make: 'Ford', year: 2014},
-  {color: 'white', make: 'Tesla', year: 2016}
-];
+const numbers = [1, 2, 3, 4, 5]
 
-const idxFirstCarNewerThan2015 = cars.findIndex((car) => car.year > 2015);
-// idxFirstCarNewerThan2015 -> 3
+const greaterThanThree = array.some((num) => {
+    return num > 3
+  })
 
-// findIndex returns -1 if callback never returns a truthy value
-const missingCarIdx = cars.findIndex((car) => car.year > 2020);
-// missingCarIdx -> -1
+// console.log(greaterThanThree) will return true
 ```
----
 
-### `some`
+### Method Chaining & Using Declared Functions
 
-<img src="https://i.imgur.com/aqzFLpD.png">
-
-**PURPOSE:** Check if array has at least one element that meets a certain condition.
-
-Henry would be proud...
+- When using these array methods we can method chain. So instead of doing:
 
 ```js
-const cars = [
-  {color: 'red', make: 'BMW', year: 2001},
-  {color: 'white', make: 'Toyota', year: 2013},
-  {color: 'black', make: 'Ford', year: 2014},
-  {color: 'white', make: 'Tesla', year: 2016}
-];
+const numbers = [1, 2, 3, 4, 5]
 
-const hasFord = cars.some((car) => car.make === 'Ford');
-// hasFord -> true
+const mappedNumbers = numbers.map((num) => {
+    return num + 1
+  })
+
+// console.log(mappedNumbers) will return [ 2, 3, 4, 5, 6 ]
+
+const filteredNumbers = mappedNumbers.filter((num) => {
+    return num % 2 === 0
+  })
+
+// console.log(filteredNumbers) will return [ 2, 4, 6 ]
 ```
 
-##### YOU DO
 
-Do I have an _evil monkey_ in my room? 
+## Lesson Recap
+We learned how we can use `.forEach()` on each item in an array. We also learned about the all-important array methods `.map()`, `.filter()`, and `.reduce()`. We also learned how to use method chaining to more efficiently affect our data.
 
-```js
-const myRoom = ["evil monkey", "bed", "lamp"];
-const isEvilMonkeyInRoom = /* Fill code in here */
-```
-
----
-
-### `every`
-
-<img src="https://i.imgur.com/891yZrw.png">
-
-**PURPOSE:** Check if **every** element in the array meets a certain condition.
-
-##### Are all cars newer than 2000?
-
-```js
-const cars = [
-  {color: 'red', make: 'BMW', year: 2001},
-  {color: 'white', make: 'Toyota', year: 2013},
-  {color: 'black', make: 'Ford', year: 2014},
-  {color: 'white', make: 'Tesla', year: 2016}
-];
-
-const everyCarIsNewerThan2000 = cars.every((car) => car.year > 2000);
-// everyCarIsNewerThan2000 -> true
-```
----
-
-### `reduce`
-
-<img src="https://i.imgur.com/sSZ0s92.png">
-
-**PURPOSE:** Reduce an array into a single value or thing (such as an object).
-
-##### Sum up the numbers in an array
-
-```js
-const nums = [25, 6, 100, 3];
-
-// The callback returns the value of
-// acc (accumulator) for the next iteration.
-// The second argument, `0`, is the value
-// of acc on the first iteration.
-const sum = nums.reduce((acc, num) => acc + num, 0);
-
-// The reduce method returns whatever the callback
-// returns for the last iteration.
-// sum equals 134 (the final value returned)
-```
-
-##### Count votes
-
-The `reduce` method can return any single thing, such as an object!
-
-```js
-const votes = ['Yes', 'No', 'No', 'Yes', 'Yes'];
-const tally = votes.reduce((acc, vote) => {
-  // Assign 1 if first time seeing a certain "type" of vote
-  // otherwise increase count by 1
-  acc[vote] = acc[vote] ? acc[vote] + 1 : 1;
-  return acc;
-}, {});  // Note the initial value is an empty object
-
-// tally -> {"No": 2, "Yes": 3}
-```
-
-## Reference
-
-[Array Reference on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)
+## Resources
+ - [MDN: forEach](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach)
+ - [MDN: Array Methods](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array#)
