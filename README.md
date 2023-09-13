@@ -208,7 +208,12 @@ const shoppingCart = [5.08, 10.33, 7.37, 14.32, 20.43, 1.08, 5.38]
 
 const totalCost = ....solution goes here
 
-````
+```
+
+<img src="./arraymethods.jpeg"/>
+
+
+
 ## Lesson Recap
 We learned how we can use `.forEach()` on each item in an array. We also learned about the all-important array methods `.map()`, `.filter()`, and `.reduce()`. We also learned how to use method chaining to more efficiently affect our data.
 
